@@ -1,0 +1,44 @@
+# версия docker-compose
+version: '3'
+
+# перечень томов (volume)
+volumes:
+  pg_data:
+  static:
+
+# перчечень контейнеров
+services:
+  db:
+    # из какого образа запустить контейнер
+    image: postgres:13.10
+    # файл или список файлов с переменными окружения
+    env_file: .env
+    # список томов для подключения к контейнеру
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  backend:
+    # из какого докерфайла собрать образ
+    build: ./backend/
+    env_file: .env
+    volumes:
+      - static:/backend_static
+    # какие контейнеры (список) должны быть запущены до старта этого контейнера
+    depends_on:
+      - db
+  frontend:
+    env_file: .env
+    build: ./frontend/
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+
+  gateway:
+    build: ./gateway/
+    # env_file: .env
+    volumes:
+      - static:/staticfiles
+    # Пробрасываем запросы с порта 8000 хоста на порт 80 контейнера
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
