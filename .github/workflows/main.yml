@@ -48,3 +48,27 @@ jobs:
           python -m flake8 backend/
           cd backend/
           python manage.py test
+
+  build_and_push_to_docker_hub:
+    name: Push Docker image to DockerHub
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Set up Doecker Buildx
+        # установить сборщик контенеров
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push to DockerHub
+        uses: docker/build-push-action@v4
+        with:
+          # где докерфайл
+          context: ./backend/
+          push: true
+          # latest, чтобы на сервере и в compose не указывать версию
+          tags: kldaniil/taski_backend:latest
