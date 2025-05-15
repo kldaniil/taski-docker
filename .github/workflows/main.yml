@@ -15,6 +15,6 @@ jobs:
       # их можно использовать в своих workflow.
       # Применим готовое описание шага для получения исходного кода
       - name: Check out repository code # мое имя шага
-      - uses: actions/checkout@v3 # готовое решение из библиотеки
+        uses: actions/checkout@v3 # готовое решение из библиотеки
       - name: Print project tree
-      - run: tree .
+        run: tree .
