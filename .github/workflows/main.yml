@@ -1,0 +1,20 @@
+name: Main Taski Workflow
+# перечень событий-триггеров
+on:
+  push:
+    # какие ветки отслеживаем
+    branches:
+      - main
+
+# список задач
+jobs:
+  checkout-and-print-tree:
+    runs-on: ubuntu-latest
+    steps:
+      # На GitHub Actions есть готовые описания шагов, 
+      # их можно использовать в своих workflow.
+      # Применим готовое описание шага для получения исходного кода
+      - name: Check out repository code # мое имя шага
+      - uses: actions/checkout@v3 # готовое решение из библиотеки
+      - name: Print project tree
+      - run: tree .
